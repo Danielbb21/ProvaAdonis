@@ -11,4 +11,5 @@ Route.group(() => {
 
   Route.put('user', 'UserController.update');
   Route.delete('user', 'UserController.destroy');
+  Route.resource('game', 'GameController').apiOnly();
 }).middleware(['auth'])
