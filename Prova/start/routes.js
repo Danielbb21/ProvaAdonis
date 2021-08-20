@@ -2,7 +2,7 @@
 
 const Route = use('Route')
 
-Route.post('user', 'UserController.store');
+Route.post('user', 'UserController.store').validator('User');
 Route.get('user', 'UserController.show');
 Route.post('session', 'SessionController.store');
 
