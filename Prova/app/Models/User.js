@@ -21,6 +21,10 @@ class User extends Model {
     })
   }
 
+  gambles(){
+    return this.hasMany('App/Models/Gamble');
+  }
+
   /**
    * A relationship on tokens is required for auth to
    * work. Since features like `refreshTokens` or
