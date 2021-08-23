@@ -1,6 +1,8 @@
 'use strict'
 
 const User = use('App/Models/User');
+const Database = use('Database');
+
 class UserController {
 
   async index({ request, response }) {
@@ -27,6 +29,9 @@ class UserController {
 
       // const user = await User.find(1)
       const users = await User.query('id').where('id', auth.user.id).with('gambles.game').fetch();
+
+
+
       // const teste = await user
       //   .gambles()
       //   .where('id', 1)
@@ -70,16 +75,17 @@ class UserController {
   }
   async addingNumbers({ request, response, auth }) {
     try {
-      const user = await User.findOrFail(auth.user.id);
-
       const games = request.input('games');
-      const teste = games.map(element=>{
-        return {...element, user_id: auth.user.id}
-      });
 
-      console.log(teste);
-      await user.gambles().createMany(teste);
-      // console.log(user);
+      const trx = await Database.beginTransaction();
+      const user = await User.findOrFail(auth.user.id, trx);
+
+
+      const gameObj = games.map(element => {
+        return { ...element, user_id: auth.user.id }
+      });
+      await user.gambles().createMany(gameObj, trx);
+      await trx.commit();
       return user;
     }
     catch (err) {

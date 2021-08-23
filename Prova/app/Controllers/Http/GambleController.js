@@ -63,10 +63,30 @@ class GambleController {
 
 
   async update({ params, request, response }) {
+
+    try{
+      const data = request.all();
+      const gamble = await Gamble.findOrFail(params.id);
+      gamble.merge(data);
+      await gamble.save();
+      return gamble;
+    }
+    catch(err){
+      console.log(err.message);
+      return response.status(err.status).send({error: err.message});
+    }
   }
 
 
   async destroy({ params, request, response }) {
+    try{
+      const gamble = await Gamble.findOrFail(params.id);
+      await gamble.delete();
+    }
+
+    catch(err){
+      return response.status(err.status).send({error: err.message});
+    }
   }
 }
 
