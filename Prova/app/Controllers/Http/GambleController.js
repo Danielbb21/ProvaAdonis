@@ -57,6 +57,16 @@ class GambleController {
 
 
   async show({ params, request, response, view }) {
+    try{
+      const gamble = await Gamble.findOrFail(params.id);
+
+      return gamble;
+    }
+    catch(err){
+      console.log(err.message);
+      return response.status(err.status).send({error: err.message});
+    }
+
   }
 
 
