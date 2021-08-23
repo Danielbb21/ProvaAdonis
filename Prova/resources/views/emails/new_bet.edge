@@ -1,0 +1,6 @@
+<h2>Olá {{name}}, aqui estão suas novas apostas</h2>
+@each(user in betNumbers)
+  <p> {{ user["gameNumbers"]}} </p>
+  <p> {{ game["type"]}} </p>
+@endeach
+

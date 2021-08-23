@@ -12,6 +12,7 @@
 
 const Gamble = use('App/Models/Gamble');
 const Game = use('App/Models/Game');
+const Mail = use('Mail');
 
 class GambleController {
 
@@ -33,18 +34,34 @@ class GambleController {
   async store({ params, request, response, auth }) {
     try {
 
-      const data = request.only(['gameNumbers', 'game_date', 'price']);
+      const data = request.input('data');
 
-      const game = await Game.find(params.games_id);
+      console.log(data)
+      // const game = await Game.find(params.games_id);
 
-      const gameNumbers = data.gameNumbers.toString();
-      console.log(game['max-number'], data.gameNumbers.length )
-      console.log('gamenubers', data.gameNumbers.length);
-      if(game['max-number'] !==  data.gameNumbers.length){
-        throw new Error('mismatched game numbers')
-      }
+      // const gameNumbers = data.gameNumbers.toString();
+      // console.log(game['max-number'], data.gameNumbers.length )
+      // console.log('gamenubers', data.gameNumbers.length);
+      // if(game['max-number'] !==  data.gameNumbers.length){
+      //   throw new Error('mismatched game numbers')
+      // }
 
-      const gamble = await Gamble.create({ gameNumbers, game_date: data.game_date,price: data.price, user_id: auth.user.id, game_id: params.games_id });
+      // const gamble = await Gamble.create({ gameNumbers, game_date: data.game_date,price: data.price, user_id: auth.user.id, game_id: params.games_id });
+      const teste = data.map((element) =>{
+        return {...element, gameNumbers: element.gameNumbers.toString(), user_id: auth.user.id}
+      });
+
+      await Mail.send(
+        ['emails.new_bet'],
+        { name:'1', betNumbers: teste },
+        message => {
+          message
+            .to('email@teste.com')
+            .from('daniel@teste.com', 'Daniel |Teste')
+            .subject('Nova aposta')
+        }
+      )
+      const gamble = await Gamble.createMany(teste);
       return gamble;
     }
     catch (err) {

@@ -2,7 +2,9 @@
 
 const User = use('App/Models/User');
 const Database = use('Database');
+const Game = use('App/Models/Game');
 
+const Mail = use('Mail');
 class UserController {
 
   async index({ request, response }) {
@@ -28,7 +30,7 @@ class UserController {
       // const query = request.get();
 
       // const user = await User.find(1)
-      const users = await User.query('id').where('id', auth.user.id).with('gambles.game').fetch();
+      const users = await User.query().where('id', auth.user.id).with('gambles.game').fetch();
 
 
 
@@ -84,7 +86,22 @@ class UserController {
       const gameObj = games.map(element => {
         return { ...element, user_id: auth.user.id }
       });
+      console.log('GAME', gameObj);
       await user.gambles().createMany(gameObj, trx);
+      const allGames = await Game.all();
+      console.log('ALL ', allGames);
+
+
+      await Mail.send(
+        ['emails.new_bet'],
+        { name: user.name, betNumbers: user, game: allGames },
+        message => {
+          message
+            .to('email@teste.com')
+            .from('daniel@teste.com', 'Daniel |Teste')
+            .subject('Nova aposta')
+        }
+      )
       await trx.commit();
       return user;
     }
@@ -94,5 +111,6 @@ class UserController {
     }
   }
 }
+
 
 module.exports = UserController
