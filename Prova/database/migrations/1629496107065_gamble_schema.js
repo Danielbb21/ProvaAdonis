@@ -15,6 +15,7 @@ class GambleSchema extends Schema {
       .inTable('users')
       .onUpdate('CASCADE')
       .onDelete('CASCADE')
+      .notNullable()
       table
       .integer('game_id')
       .unsigned()
@@ -22,6 +23,7 @@ class GambleSchema extends Schema {
       .inTable('games')
       .onUpdate('CASCADE')
       .onDelete('SET NULL')
+      .notNullable()
       table.timestamp('game_date').index()
       table.timestamps()
     })
