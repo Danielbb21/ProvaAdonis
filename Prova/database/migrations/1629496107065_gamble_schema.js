@@ -24,6 +24,7 @@ class GambleSchema extends Schema {
       .onUpdate('CASCADE')
       .onDelete('SET NULL')
       .notNullable()
+      table.decimal('price').notNullable()
       table.timestamp('game_date').index()
       table.timestamps()
     })

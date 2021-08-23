@@ -4,11 +4,11 @@ const User = use('App/Models/User');
 class UserController {
 
   async index({ request, response }) {
-    try{
+    try {
       const users = await User.all();
       return users;
     }
-    catch(err){
+    catch (err) {
       return response.status(err.status).send({ error: 'Sommeting went wrong' });
     }
   }
@@ -21,7 +21,7 @@ class UserController {
   }
 
 
-  async show({ auth,request, response }) {
+  async show({ auth, request, response }) {
     try {
       // const query = request.get();
 
@@ -66,6 +66,25 @@ class UserController {
     }
     catch (err) {
       return response.status(err.status).send({ error: 'Sommeting went wrong' });
+    }
+  }
+  async addingNumbers({ request, response, auth }) {
+    try {
+      const user = await User.findOrFail(auth.user.id);
+
+      const games = request.input('games');
+      const teste = games.map(element=>{
+        return {...element, user_id: auth.user.id}
+      });
+
+      console.log(teste);
+      await user.gambles().createMany(teste);
+      // console.log(user);
+      return user;
+    }
+    catch (err) {
+      console.log(err);
+      return response.status(400).send({ error: err.message });
     }
   }
 }
