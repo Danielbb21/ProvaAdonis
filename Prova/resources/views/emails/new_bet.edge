@@ -2,13 +2,13 @@
 
 <div style=" width: 100%;">
 @each(user in betNumbers)
-  <div style ="border-left: 6px solid {{user["color"]}}; padding-left:5px;  border-radius:6px;">
-      <p> Game Numbers: {{ user["gameNumbers"]}} </p>
+  <div style ="border-left: 6px solid {{user["color"]}}; padding-left:5px;  border-radius:6px; margin-bottom: 25px;">
+      <p style = "font-weight: bold"> Game Numbers: {{ user["gameNumbers"]}} </p>
       <p> Date of game: {{ user["date_game"]}} </p>
       <p> Price: R$ {{ user["price"]}} </p>
 
-      <p style = "color: {{user["color"]}}"> Type: {{ user["type"]}} </p>
-  </div>
+      <p style = "color: {{user["color"]}}; font-weight: bold"> Type: {{ user["type"]}} </p>
+    </div>
 
 
 
