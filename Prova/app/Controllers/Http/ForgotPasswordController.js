@@ -4,6 +4,8 @@ const User = use('App/Models/User');
 const crypto = require('crypto');
 const Mail = use('Mail');
 const moment = require('moment');
+const Keu = use('Kue');
+const Job = use('App/Jobs/ForgotPassword');
 
 class ForgotPasswordController {
 
@@ -17,17 +19,8 @@ class ForgotPasswordController {
       user.token = cry;
       user.token_created_at = new Date();
       await user.save();
-      await Mail.send(
-        ['emails.forgot_password', 'emails.forgot_password-text'],
-        { email, token: user.token, link: `${request.input('redirect_url')}?token=${user.token}`, name: user.name },
-        message => {
-          message
-            .to(user.email)
-            .from('daniel@teste.com', 'Daniel |Teste')
-            .subject('Recuperação de senha')
-        }
-      )
-
+      Keu.dispatch(Job.key, {token: user.token, name: user.name, email: user.email, redirect: request.input('redirect_url')}, {attempts: 3});
+      return 'ok';
     }
     catch (err) {
 

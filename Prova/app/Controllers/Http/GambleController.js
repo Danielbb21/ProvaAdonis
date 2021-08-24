@@ -22,6 +22,8 @@ const Gamble = use('App/Models/Gamble');
 const Game = use('App/Models/Game');
 const Mail = use('Mail');
 const User = use('App/Models/User');
+const Keu = use('Kue');
+const Job = use('App/Jobs/NewBetMail');
 
 class GambleController {
 
@@ -83,17 +85,9 @@ class GambleController {
 
       const user = await User.find(auth.user.id);
 
-      await Mail.send(
-        ['emails.new_bet', 'emails.new_bet-text'],
-        { name: user.name, betNumbers: newGambles, games: allGames },
-        message => {
-          message
-            .to('email@teste.com')
-            .from('daniel@teste.com', 'Daniel |Teste')
-            .subject('Nova aposta')
-        }
-      )
+
       const gamble = await Gamble.createMany(teste);
+      Keu.dispatch(Job.key, {name: user.name, newGambles, allGames, email: user.email}, {attempts: 3});
       return gamble;
     }
     catch (err) {
