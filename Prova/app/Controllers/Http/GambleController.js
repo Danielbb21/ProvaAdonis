@@ -13,17 +13,18 @@
 const Gamble = use('App/Models/Gamble');
 const Game = use('App/Models/Game');
 const Mail = use('Mail');
+const User  = use('App/Models/User');
 
 class GambleController {
 
   async index({ request, response, view }) {
     try {
       const gambles = await Gamble.query().with('user').with('game').fetch();
-      console.log(gambles);
+
       return gambles;
     } catch (err) {
 
-      console.log(err.message);
+
       return response.status(400).send({ error: err.message });
     }
   }
@@ -51,9 +52,31 @@ class GambleController {
         return {...element, gameNumbers: element.gameNumbers.toString(), user_id: auth.user.id}
       });
 
+      const games = await Game.all();
+      const allGames = games.toJSON();
+
+      let teste2 = [];
+
+      for(let i = 0;i<teste.length ;i++){
+        let teste3 = {...teste[i], type: '', color: ''};
+
+        for(let j=0; j<allGames.length ;j++){
+          if(teste[i].game_id === allGames[j].id){
+            teste3.type = allGames[j].type
+            teste3.color = allGames[j].color;
+            teste2.push(teste3);
+          }
+        }
+      }
+      const newGambles = teste2.map((gamble) =>{
+        return {...gamble , price: gamble.price.toFixed(2).toString().replace('.', ',')};
+      })
+
+      const user = await User.find(auth.user.id);
+
       await Mail.send(
         ['emails.new_bet'],
-        { name:'1', betNumbers: teste },
+        { name:user.name, betNumbers: newGambles, games: allGames },
         message => {
           message
             .to('email@teste.com')

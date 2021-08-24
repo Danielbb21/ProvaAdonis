@@ -7,14 +7,14 @@ const Mail = use('Mail');
 
 GambleHook.sendCreateGambleEmail = async (gambleInstance) => {
 
-  // if(!gambleInstance.firty.user_id) return;
-  const { id } = gambleInstance;
-  console.log('gamble_id', id);
+  // // if(!gambleInstance.firty.user_id) return;
+  // const { id } = gambleInstance;
 
-  data.push(id);
-  const gamble = await Gamble.find(id);
-  console.log(gamble.user_id);
-  console.log('data', data);
+
+  // data.push(id);
+  // const gamble = await Gamble.find(id);
+  // console.log(gamble.user_id);
+  // console.log('data', data);
 
 
 }

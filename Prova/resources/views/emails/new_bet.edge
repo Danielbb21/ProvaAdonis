@@ -1,6 +1,16 @@
 <h2>Olá {{name}}, aqui estão suas novas apostas</h2>
+
+<div style=" width: 100%; margin: 0 auto;">
 @each(user in betNumbers)
-  <p> {{ user["gameNumbers"]}} </p>
-  <p> {{ game["type"]}} </p>
+  <div style ="border-left: 6px solid {{user["color"]}}; padding-left:5px;  border-radius:6px;">
+      <p> Game Numbers: {{ user["gameNumbers"]}} </p>
+
+      <p> Price: R$ {{ user["price"]}} </p>
+      <p style = "color: {{user["color"]}}"> Type: {{ user["type"]}} </p>
+  </div>
+
+
+
 @endeach
 
+</div>
