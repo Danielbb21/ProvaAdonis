@@ -49,7 +49,7 @@ class UserController {
     }
     catch (err) {
 
-      return response.status(err.status).send({ error: 'Sommeting went wrong' });
+      return response.status(400).send({ error: 'Sommeting went wrong' });
     }
   }
 

@@ -52,7 +52,7 @@ class GameController {
        return game;
     }
     catch(err){
-      return response.status(err.status).send({error: err.message});
+      return response.status(400).send({error: err.message})
     }
   }
 

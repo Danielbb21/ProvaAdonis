@@ -14,7 +14,7 @@ class User extends Model {
      * A hook to hash the user password before saving
      * it to the database.
      */
-    this.addHook('afterSave', 'UserHook.sendNewUserMail');
+    this.addHook('afterCreate', 'UserHook.sendNewUserMail');
 
     this.addHook('beforeSave', async (userInstance) => {
       if (userInstance.dirty.password) {

@@ -8,7 +8,7 @@ class ExceptionHandler extends BaseExceptionHandler {
 
   async handle(error, { request, response }) {
     if (error.name === 'ValidationException') {
-      response.status(error.status).send(error.messages)
+      return response.status(error.status).send(error.messages)
     }
     if (Env.get('NODE_ENV') === 'development') {
       console.log(error.status);
