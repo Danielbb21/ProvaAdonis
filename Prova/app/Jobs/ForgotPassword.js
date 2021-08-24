@@ -24,7 +24,7 @@ class ForgotPassword {
         message
           .to(email)
           .from('daniel@teste.com', 'Daniel |Teste')
-          .subject('Recuperação de senha')
+          .subject('Recover password')
       }
     )
   }

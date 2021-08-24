@@ -23,7 +23,7 @@ class NewBetMail {
         message
           .to(email)
           .from('daniel@teste.com', 'Daniel |Teste')
-          .subject('Nova aposta')
+          .subject('New bets')
       }
     )
   }

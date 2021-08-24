@@ -24,7 +24,7 @@ class NewUserMail {
         message
           .to(email)
           .from('daniel@teste.com', 'Daniel |Teste')
-          .subject('Seja bem-vindo')
+          .subject('Welcome')
       }
     )
   }
