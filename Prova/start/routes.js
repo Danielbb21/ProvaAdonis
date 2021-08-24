@@ -10,7 +10,6 @@ Route.put('passwords/reset','ForgotPasswordController.update');
 
 Route.group(() => {
   Route.get('user', 'UserController.show');
-  Route.put('user/game', 'UserController.addingNumbers');
   Route.put('user', 'UserController.update');
   Route.delete('user', 'UserController.destroy');
   Route.resource('game', 'GameController').apiOnly();

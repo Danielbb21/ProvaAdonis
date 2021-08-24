@@ -27,20 +27,7 @@ class UserController {
 
   async show({ auth, request, response }) {
     try {
-      // const query = request.get();
-
-      // const user = await User.find(1)
       const users = await User.query().where('id', auth.user.id).with('gambles').fetch();
-
-
-
-      // const teste = await user
-      //   .gambles()
-      //   .where('id', 1)
-      //   .with('user')
-      //   .fetch()
-
-      // const teste2 = await User.count('u');
       return users;
     }
     catch (err) {
@@ -75,42 +62,7 @@ class UserController {
       return response.status(err.status).send({ error: 'Sommeting went wrong' });
     }
   }
-  async addingNumbers({ request, response, auth }) {
-    try {
-      const games = request.input('games');
 
-      const trx = await Database.beginTransaction();
-      const user = await User.findOrFail(auth.user.id, trx);
-
-
-      const gameObj = games.map(element => {
-        return { ...element, user_id: auth.user.id }
-      });
-
-      await user.gambles().createMany(gameObj, trx);
-      const allGames = await Game.all();
-
-
-
-      await Mail.send(
-        ['emails.new_bet'],
-        { name: user.name, betNumbers: user, game: gameObj },
-        message => {
-          message
-            .to('email@teste.com')
-            .from('daniel@teste.com', 'Daniel |Teste')
-            .subject('Nova aposta')
-        }
-      )
-
-      await trx.commit();
-      return user;
-    }
-    catch (err) {
-      console.log(err);
-      return response.status(400).send({ error: err.message });
-    }
-  }
 }
 
 
