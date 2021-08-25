@@ -88,7 +88,7 @@ class GambleController {
 
       const gamble = await Gamble.createMany(teste);
       Keu.dispatch(Job.key, {name: user.name, newGambles, allGames, email: user.email}, {attempts: 3});
-      return gamble;
+      return newGambles;
     }
     catch (err) {
 
