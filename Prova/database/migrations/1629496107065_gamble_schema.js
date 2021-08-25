@@ -22,7 +22,7 @@ class GambleSchema extends Schema {
       .references('id')
       .inTable('games')
       .onUpdate('CASCADE')
-      .onDelete('SET NULL')
+      .onDelete('CASCADE')
       .notNullable()
       table.decimal('price').notNullable()
       table.timestamp('game_date')

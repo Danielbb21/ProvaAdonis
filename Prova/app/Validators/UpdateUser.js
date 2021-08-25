@@ -6,8 +6,11 @@ class UpdateUser {
   }
 
   get rules () {
+    const userId = this.ctx.auth.user.id
+    console.log(userId);
+
     return {
-      email: 'email',
+      email: `unique:users,email,id,${userId}`,
       password: 'confirmed'
     }
   }

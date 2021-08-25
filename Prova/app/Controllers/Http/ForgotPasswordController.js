@@ -15,7 +15,6 @@ class ForgotPasswordController {
       const cry = crypto.randomBytes(10).toString('hex');
       const user = await User.findByOrFail('email', email);
 
-      // console.log('user', user);
       user.token = cry;
       user.token_created_at = new Date();
       await user.save();

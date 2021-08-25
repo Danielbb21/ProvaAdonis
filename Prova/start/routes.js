@@ -23,5 +23,18 @@ Route.group(() => {
     )
   );
 
-  Route.resource('games.gamble', 'GambleController').apiOnly();
+  Route.resource('gamble', 'GambleController').apiOnly().validator(
+    new Map(
+      [
+        [
+          ['gamble.store'],
+          ['Gamble']
+        ],
+        [
+          ['gamble.update'],
+          ['UpdateGamble']
+        ]
+      ]
+    )
+  );
 }).middleware(['auth'])

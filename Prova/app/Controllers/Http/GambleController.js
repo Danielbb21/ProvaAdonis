@@ -42,7 +42,7 @@ class GambleController {
 
 
 
-  async store({ params, request, response, auth }) {
+  async store({  request, response, auth }) {
     try {
 
       const data = request.input('data');
@@ -120,13 +120,17 @@ class GambleController {
     try {
       const data = request.all();
       const gamble = await Gamble.findOrFail(params.id);
+      const game = await Game.find(data.game_id);
+      if(!game){
+        throw new Error('Game not found');
+      }
       gamble.merge(data);
       await gamble.save();
       return gamble;
     }
     catch (err) {
       console.log(err.message);
-      return response.status(err.status).send({ error: err.message });
+      return response.status(400).send({ error: err.message });
     }
   }
 
