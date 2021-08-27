@@ -9,11 +9,12 @@
  */
 
 const formatDate = (date) => {
-  const dateString = date.toString().split(' ');
-  const dateValue = dateString[0].split('-');
-  const day = dateValue[2];
-  const month = dateValue[1];
-  const year = dateValue[0];
+
+  const dateString = date.toLocaleDateString().split('/');
+
+  const day = dateString[0];
+  const month = dateString[1];
+  const year = dateString[2];
 
   return `${day}/${month}/${year}`;
 }
@@ -41,13 +42,14 @@ class GambleController {
 
 
 
-
-  async store({  request, response, auth }) {
+  async store({ request, response, auth }) {
+    console.log('aquiii');
     try {
 
       const data = request.input('data');
-
+      console.log('data', data);
       const teste = data.map((element) => {
+        console.log('element', element);
         return { ...element, gameNumbers: element.gameNumbers.toString(), user_id: auth.user.id }
       });
 
@@ -69,31 +71,33 @@ class GambleController {
         }
       }
 
-      teste2.map((game)=>{
+      teste2.map((game) => {
 
         const gameType = allGames.find(gm => gm.type === game.type);
 
-
-        if(gameType['max-number'] !== game.gameNumbers.split(',').length){
+        console.log(gameType['max-number'], game.gameNumbers.split(',').length)
+        if (gameType['max-number'] !== game.gameNumbers.split(',').length) {
           throw new Error('mismatched game numbers')
         }
       })
 
       const newGambles = teste2.map((gamble) => {
-        return { ...gamble, price: gamble.price.toFixed(2).toString().replace('.', ','), date_game: formatDate(gamble.game_date) };
+        const date = new Date();
+        return { ...gamble, price: gamble.price.toFixed(2).toString().replace('.', ','), date_game: formatDate(date) };
       })
 
       const user = await User.find(auth.user.id);
 
 
       const gamble = await Gamble.createMany(teste);
-      Keu.dispatch(Job.key, {name: user.name, newGambles, allGames, email: user.email}, {attempts: 3});
+      Keu.dispatch(Job.key, { name: user.name, newGambles, allGames, email: user.email }, { attempts: 3 });
       return newGambles;
     }
     catch (err) {
-
+      console.log('aquii');
       console.log(err.message);
-      return response.status(400).send({ error: err.message });
+      return err;
+      // return response.status(400).send({ error: err.message });
     }
 
   }
@@ -121,7 +125,7 @@ class GambleController {
       const data = request.all();
       const gamble = await Gamble.findOrFail(params.id);
       const game = await Game.find(data.game_id);
-      if(!game){
+      if (!game) {
         throw new Error('Game not found');
       }
       gamble.merge(data);

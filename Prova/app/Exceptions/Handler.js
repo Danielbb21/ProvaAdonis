@@ -14,7 +14,7 @@ class ExceptionHandler extends BaseExceptionHandler {
 
       const youch = new Youch(error, request.request)
       const errorJSON = await youch.toJSON()
-
+      console.log('auiii');
       return response.status(error.status).send(errorJSON)
     }
 

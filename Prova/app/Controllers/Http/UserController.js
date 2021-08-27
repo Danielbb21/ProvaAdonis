@@ -6,6 +6,7 @@ const Game = use('App/Models/Game');
 
 class UserController {
 
+
   async index({ request, response }) {
     try {
       const users = await User.all();
@@ -30,7 +31,8 @@ class UserController {
 
   async show({ auth,  response }) {
     try {
-      const users = await User.query().where('id', auth.user.id).with('gambles').fetch();
+      console.log('aquii');
+      const users = await User.query().where('id', auth.user.id).with('gambles.game').fetch();
       return users;
     }
     catch (err) {
