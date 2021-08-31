@@ -19,7 +19,7 @@ class NewUserMail {
 
     await Mail.send(
       ['emails.new_user', 'emails.new_user-text'],
-      {link: `https://prova-b5b02.web.app/`, name: name },
+      {link: `http://localhost:3000/`, name: name },
       message => {
         message
           .to(email)

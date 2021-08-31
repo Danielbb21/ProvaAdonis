@@ -57,7 +57,7 @@ class UserController {
       return user;
     }
     catch (err) {
-      console.log(err.message);
+      console.log('aquiii', err.message);
       return response.status(400).send({ error: err.message });
     }
   }

@@ -20,11 +20,14 @@ class GameController {
   async store({ request, response }) {
 
     try {
+
       const data = request.all();
+      console.log(data);
       const game = await Game.create(data);
       return game;
     }
     catch(err){
+      console.log(err.message);
       return response.status(err.status).send({error: err.message});
     }
   }

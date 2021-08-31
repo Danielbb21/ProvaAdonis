@@ -96,6 +96,7 @@ class GambleController {
     catch (err) {
       console.log('aquii');
       console.log(err.message);
+      return response.status(400).json({error: err.message});
       return err;
       // return response.status(400).send({ error: err.message });
     }
