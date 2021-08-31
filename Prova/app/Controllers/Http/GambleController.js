@@ -18,7 +18,7 @@ const formatDate = (date) => {
 
   return `${day}/${month}/${year}`;
 }
-
+const Database = use('Database');
 const Gamble = use('App/Models/Gamble');
 const Game = use('App/Models/Game');
 const Mail = use('Mail');
@@ -26,13 +26,86 @@ const User = use('App/Models/User');
 const Keu = use('Kue');
 const Job = use('App/Jobs/NewBetMail');
 
+const formatDate2 = (date) => {
+  const dateSeperated = date.split('/');
+  const day = dateSeperated[0];
+  const month = dateSeperated[1];
+  const year = dateSeperated[2];
+
+  return `${year}-${month}-${day}`;
+}
 class GambleController {
 
-  async index({ request, response, view }) {
+  async index({ auth, request, response, view }) {
     try {
-      const gambles = await Gamble.query().with('user').with('game').fetch();
 
-      return gambles;
+      const { page, type } = request.get();
+      console.log('PAGE', page, type);
+
+      const date = new Date();
+      const formatedDate = formatDate2(date.toLocaleDateString());
+      console.log('FORMATED', formatedDate);
+
+
+      if (type) {
+        const game = await Game.findBy('type', type);
+        if (game) {
+          console.log('aquii');
+          const gambles = await Gamble.query().where('user_id', auth.user.id).andWhere('game_id', game.id).whereBetween('game_date', [formatedDate + 'T00:00:00.000Z', formatedDate + 'T23:59:17.000Z']).with('user').with('game').paginate(+page, 10);
+          const allGambles = gambles.toJSON();
+          return gambles;
+        }
+        else{
+          console.log('aquii');
+          const gambles = await Gamble.query().where('user_id', auth.user.id).whereBetween('game_date', [formatedDate + 'T00:00:00.000Z', formatedDate + 'T23:59:17.000Z']).with('user').with('game').paginate(+page, 10);
+          const allGambles = gambles.toJSON();
+          return gambles;
+        }
+      }
+      else {
+        console.log('aquii');
+        const gambles = await Gamble.query().where('user_id', auth.user.id).whereBetween('game_date', [formatedDate + 'T00:00:00.000Z', formatedDate + 'T23:59:17.000Z']).with('user').with('game').paginate(+page, 10);
+        const allGambles = gambles.toJSON();
+        return gambles;
+      }
+      // const teste = allGambles.filter(element => {
+      //   const t = new Date().toString().split('GMT')[0];
+      //   const date_game = element.game_date.toString().split('GMT')[0].split(' ');
+      //   const dayGame = date_game[2];
+      //   const monthGame = date_game[1];
+      //   const yearGame = date_game[3];
+      //   const totalDate = dayGame + '-' + monthGame + '-' + yearGame;
+
+      //   const tt = t.split(' ');
+      //   const dayT = tt[2];
+      //   const monthT = tt[1];
+      //   const yearT = tt[3];
+      //   const totalDateT = dayT + '-' + monthT + '-' + yearT;
+      //   // console.log("element251", totalDate, totalDateT );
+      //   return totalDate === totalDateT;
+      // })
+      // // console.log('teste', teste);
+      // const totalPages = Math.ceil(teste.length / 10);
+      // let totalPerPage = 10;
+      // console.log(teste.length, totalPages)
+      // // if (teste.length >= totalPages) {
+      // //   totalPerPage = teste.length;
+      // // }
+      // // else {
+      // //   totalPerPage = teste.length - totalPages
+      // // }
+      // const totalToReturn = +page.page === 0 ? (page.page - 1) * totalPerPage : (page.page - 1) * totalPerPage + 1;
+      // console.log('TOTAL', totalToReturn);
+      // let dataToBeReturned = [];
+      // for (let i = totalToReturn - 1; i < totalPerPage * page.page; i++) {
+      //   console.log('i', i)
+      //   if (teste[i]) {
+      //     dataToBeReturned.push(teste[i]);
+      //   }
+      // }
+
+      // return { total: teste.length, perPage: totalPerPage, page: +page.page, lastPage: totalPages, data: dataToBeReturned };
+      // // return gambles;
     } catch (err) {
 
 
@@ -96,7 +169,7 @@ class GambleController {
     catch (err) {
       console.log('aquii');
       console.log(err.message);
-      return response.status(400).json({error: err.message});
+      return response.status(400).json({ error: err.message });
       return err;
       // return response.status(400).send({ error: err.message });
     }
@@ -150,6 +223,20 @@ class GambleController {
       return response.status(err.status).send({ error: err.message });
     }
   }
+
+  async show({ params, request, response, view }) {
+    try {
+      const gamble = await Gamble.query().with('user').with('game').fetch();
+
+      return gamble;
+    }
+    catch (err) {
+      console.log(err.message);
+      return response.status(err.status).send({ error: err.message });
+    }
+
+  }
+
 }
 
 module.exports = GambleController

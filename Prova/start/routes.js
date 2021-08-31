@@ -37,4 +37,5 @@ Route.group(() => {
       ]
     )
   );
+
 }).middleware(['auth'])
