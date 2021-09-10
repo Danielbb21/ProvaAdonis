@@ -7,6 +7,7 @@ const Env = use('Env')
 class ExceptionHandler extends BaseExceptionHandler {
 
   async handle(error, { request, response }) {
+    console.log('error', error);
     if (error.name === 'ValidationException') {
       return response.status(error.status).send(error.messages)
     }
@@ -15,6 +16,7 @@ class ExceptionHandler extends BaseExceptionHandler {
       const youch = new Youch(error, request.request)
       const errorJSON = await youch.toJSON()
       console.log('auiii');
+      console.log('error', error);
       return response.status(error.status).send(errorJSON)
     }
 
