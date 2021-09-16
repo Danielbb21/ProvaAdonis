@@ -43,29 +43,48 @@ class GambleController {
       console.log('PAGE', page, type);
 
       const date = new Date();
+      const games_id = request.all();
+      const tewst = games_id.game_id;
+      console.log('Games_id',games_id);
+      const g = games_id.games;
+      console.log('g', g);
       const formatedDate = formatDate2(date.toLocaleDateString());
-      console.log('FORMATED', formatedDate);
+      // console.log('FORMATED', formatedDate);
+      // console.log('type', type);
+      let arr = g.split(',');
 
-
+      // for(var i = 0;i< g.length;i++){
+      //   arr.push(g[i]);
+      // }
+      console.log('arrr', arr);
       if (type) {
-        const game = await Game.findBy('type', type);
+        const game = await Game.find('type', type);
+        // console.log('Gmae', game);
         if (game) {
-          console.log('aquii');
-          const gambles = await Gamble.query().where('user_id', auth.user.id).andWhere('game_id', game.id).whereBetween('game_date', [formatedDate + 'T00:00:00.000Z', formatedDate + 'T23:59:17.000Z']).with('user').with('game').paginate(+page, 10);
+          // console.log('aquii');
+          const gambles = await Gamble.query().where('user_id', auth.user.id).WhereIn('game_id', game.id).whereBetween('game_date', [formatedDate + 'T00:00:00.000Z', formatedDate + 'T23:59:17.000Z']).with('user').with('game').paginate(+page, 10);
           const allGambles = gambles.toJSON();
           return gambles;
         }
         else{
           console.log('aquii');
+
           const gambles = await Gamble.query().where('user_id', auth.user.id).whereBetween('game_date', [formatedDate + 'T00:00:00.000Z', formatedDate + 'T23:59:17.000Z']).with('user').with('game').paginate(+page, 10);
           const allGambles = gambles.toJSON();
+          // console.log('games', allGambles);
           return gambles;
         }
       }
+      else if(arr[0] !== ''){
+        console.log('aquiii3', arr.length);
+        const gambles = await Gamble.query().where('user_id', auth.user.id).from('gambles').whereIn('game_id', arr).whereBetween('game_date', [formatedDate + 'T00:00:00.000Z', formatedDate + 'T23:59:17.000Z']).with('user').with('game').paginate(+page, 10);
+        return gambles;
+      }
       else {
-        console.log('aquii');
+        console.log('aquii2');
         const gambles = await Gamble.query().where('user_id', auth.user.id).whereBetween('game_date', [formatedDate + 'T00:00:00.000Z', formatedDate + 'T23:59:17.000Z']).with('user').with('game').paginate(+page, 10);
         const allGambles = gambles.toJSON();
+
         return gambles;
       }
       // const teste = allGambles.filter(element => {
